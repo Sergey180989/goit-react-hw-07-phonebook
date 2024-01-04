@@ -1,0 +1,7 @@
+.inputFilter {
+  border-radius: 5px;
+  border: 1px solid gray;
+  background-color: blanchedalmond;
+  place-items: center;
+  height: 20px;
+}
