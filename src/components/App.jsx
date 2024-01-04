@@ -27,7 +27,7 @@ export function App() {
           <ContactList />
         </>
       ) : (
-        <p>The Phonebook is empty. Please add a new contacts.</p>
+        <p>The Phonebook is empty. Please add a new contact.</p>
       )}
     </div>
   );
