@@ -12,42 +12,34 @@ export function ContactForm() {
   const dispatch = useDispatch();
 
   const formatPhoneNumber = input => {
-    const phoneNumber = input.replace(/[^0-9]/g, '');
+    const phoneNumber = input.replace(/[^0-9]/g, '').slice(0, 10);
 
     let formattedNumber = '';
     if (phoneNumber.length >= 1) {
-      formattedNumber = `(${phoneNumber.slice(0, 3)})`;
+      formattedNumber = `(${phoneNumber.slice(0, 3)}`;
     }
     if (phoneNumber.length > 3) {
-      formattedNumber += `${phoneNumber.slice(3, 6)}-`;
+      formattedNumber += `)${phoneNumber.slice(3, 6)}`;
     }
     if (phoneNumber.length > 6) {
-      formattedNumber += `${phoneNumber.slice(6, 8)}-`;
+      formattedNumber += `-${phoneNumber.slice(6, 8)}`;
     }
     if (phoneNumber.length > 8) {
-      formattedNumber += `${phoneNumber.slice(8, 10)}`;
+      formattedNumber += `-${phoneNumber.slice(8, 10)}`;
     }
 
     return formattedNumber;
   };
-  const [formattedNumber, setFormattedNumber] = useState('');
 
   const handleInputChange = event => {
     const { name, value } = event.target;
-
     switch (name) {
       case 'name':
         setName(value);
         break;
       case 'number':
-        if (value.length < formattedNumber.length) {
-          setFormattedNumber(prev => prev.slice(0, -1));
-          setNumber(prev => formatPhoneNumber(prev.slice(0, -1)));
-        } else {
-          const formattedValue = formatPhoneNumber(value);
-          setNumber(formattedValue);
-          setFormattedNumber(formattedValue);
-        }
+        const formattedValue = formatPhoneNumber(value);
+        setNumber(formattedValue);
         break;
       default:
         break;
@@ -56,18 +48,19 @@ export function ContactForm() {
 
   const handleSubmit = event => {
     event.preventDefault();
+    const formattedValue = formatPhoneNumber(number);
     if (
       contacts.some(
-        contactItem => contactItem.number.toLowerCase() === number.toLowerCase()
+        contactItem =>
+          contactItem.number.toLowerCase() === formattedValue.toLowerCase()
       )
     ) {
-      alert(`Oops, ${number} is already in contacts!`);
+      alert(`Oops, ${formattedValue} is already in contacts!`);
       return;
     }
-    dispatch(addContact({ name, number, id: nanoid() }));
+    dispatch(addContact({ name, number: formattedValue, id: nanoid() }));
     setName('');
     setNumber('');
-    setFormattedNumber('');
   };
 
   return (
@@ -80,8 +73,8 @@ export function ContactForm() {
           name="name"
           value={name}
           onChange={handleInputChange}
-          // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces."
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Name may contain only letters, apostrophe, dash, and spaces."
           required
         />
       </label>
@@ -91,15 +84,13 @@ export function ContactForm() {
           className={css.formNumber}
           type="tel"
           name="number"
-          value={formattedNumber}
+          value={number}
           onChange={handleInputChange}
           placeholder="(000)-000-00-00"
-          // pattern="[(]{1}[0-9]{3}[)]{1}-[0-9]{3}-[0-9]{2}-[0-9]{2}"
           title="Phone number must be digits and can contain spaces, dashes, and parentheses."
           required
         />
       </label>
-
       <button type="submit" className={css.buttonAdd}>
         Add contact
       </button>
