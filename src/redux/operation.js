@@ -6,36 +6,36 @@ axios.defaults.baseURL =
 
 export const fetchContacts = createAsyncThunk(
   'contacts/fetchAll',
-  async (_, thunkAPI) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const result = await axios.get('/contacts');
-      return result.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      const { data } = await axios.get('/contacts');
+      return data;
+    } catch (e) {
+      return rejectWithValue(e);
     }
   }
 );
 
 export const addContact = createAsyncThunk(
   'contacts/addContact',
-  async (contact, thunkAPI) => {
+  async (newContact, { rejectWithValue }) => {
     try {
-      const result = await axios.post('/contacts', contact);
-      return result.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      const { data } = await axios.post('/contacts', newContact);
+      return data;
+    } catch (e) {
+      return rejectWithValue(e);
     }
   }
 );
 
 export const deleteContact = createAsyncThunk(
   'contacts/deleteContact',
-  async (contactId, thunkAPI) => {
+  async (contactId, { rejectWithValue }) => {
     try {
-      const result = await axios.delete(`/contacts/${contactId}`);
-      return result.data.id;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      await axios.delete(`/contacts/${contactId}`);
+      return contactId;
+    } catch (e) {
+      return rejectWithValue(e);
     }
   }
 );

@@ -48,17 +48,18 @@ export function ContactForm() {
 
   const handleSubmit = event => {
     event.preventDefault();
-    const formattedValue = formatPhoneNumber(number);
-    if (
-      contacts.some(
-        contactItem =>
-          contactItem.number.toLowerCase() === formattedValue.toLowerCase()
-      )
-    ) {
-      alert(`Oops, ${formattedValue} is already in contacts!`);
-      return;
-    }
-    dispatch(addContact({ name, number: formattedValue, id: nanoid() }));
+    const addContacts = contact => {
+      if (
+        contacts.some(
+          contactItem => contactItem.name.toLowerCase() === name.toLowerCase()
+        )
+      ) {
+        alert(`Oops, ${contact.name} is already in contacts!`);
+        return;
+      }
+      dispatch(addContact({ name, number, id: nanoid() }));
+    };
+    addContacts({ name, number });
     setName('');
     setNumber('');
   };
@@ -73,7 +74,7 @@ export function ContactForm() {
           name="name"
           value={name}
           onChange={handleInputChange}
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash, and spaces."
           required
         />
